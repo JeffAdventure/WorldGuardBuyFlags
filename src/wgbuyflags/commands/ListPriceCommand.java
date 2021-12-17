@@ -14,9 +14,9 @@ public class ListPriceCommand implements SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args)  throws Validate.InvalidateException, Exception {
-		Validate.isTrue(sender.hasPermission("wgbuyflags.use"), ChatColor.RED + "You have no power here!");
-		config.getFlagCosts().forEach((flag, cost) -> sender.sendMessage(ChatColor.YELLOW + flag + ": " + cost));
+	public void execute(CommandSender sender, String[] args)  throws Exception {
+		Validate.isTrue(sender.hasPermission("buyflags.use"), ChatColor.RED + "У вас нет к этому доступа!");
+		config.getFlagCosts().forEach((flag, cost) -> sender.sendMessage(ChatColor.YELLOW + "Флаг: "+flag + " | Цена: " + cost+" игр."));
 	}
 
 }

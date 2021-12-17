@@ -30,25 +30,25 @@ public class BuyFlagCommand implements SubCommand {
 	}
 
 	@Override
-	public void execute(CommandSender sender, String[] args) throws Validate.InvalidateException, Exception {
+	public void execute(CommandSender sender, String[] args) throws Exception {
 		try {
-			Validate.isTrue(sender.hasPermission("wgbuyflags.use"), ChatColor.RED + "You have no power here!");
-			Validate.isTrue(args.length >= 3, ChatColor.RED + "Not enough args");
+			Validate.isTrue(sender.hasPermission("buyflags.use"), ChatColor.RED + "У вас нет к этому доступа!");
+			Validate.isTrue(args.length >= 3, ChatColor.RED + "§4§lНедостаточно аргументов.§r Пример: §e/buyflag buy §l"+args[0]+"§r §e<§lflag§r§e> <§e§lALLOW§r §e┃§r §e§lDENY§r§e>§r");
 			Player player = Validate.cast(() -> (Player) sender, ChatColor.RED + "Only for players");
 
-			RegionManager rm = Validate.notNull(WGBukkit.getRegionManager(player.getWorld()), ChatColor.RED + "Regions are disabled in this world");
-			ProtectedRegion region = Validate.notNull(rm.getRegion(args[0].toLowerCase()), ChatColor.RED + "Region " + args[0].toLowerCase() + " doesn't exist");
-			Validate.isTrue(region.isOwner(WGBukkit.getPlugin().wrapPlayer(player, true)), ChatColor.RED + "You are not an owner of region " + region.getId());
+			RegionManager rm = Validate.notNull(WGBukkit.getRegionManager(player.getWorld()), ChatColor.RED + "Регионы выключены в этом мире");
+			ProtectedRegion region = Validate.notNull(rm.getRegion(args[0].toLowerCase()), ChatColor.RED + "Региона " + args[0].toLowerCase() + " не существует");
+			Validate.isTrue(region.isOwner(WGBukkit.getPlugin().wrapPlayer(player, true)), ChatColor.RED + "Вы не являетесь владельцем региона " + region.getId());
 
-			Flag<?> flag = Validate.notNull(Utils.findFlag(args[1].toLowerCase()), ChatColor.RED + "Flag "+args[1].toLowerCase()+" doesn't exist");
-			Double cost = Validate.notNull(config.getFlagCost(flag.getName()), ChatColor.RED + "This flag is not available for buying");
-			Validate.isTrue(econ.getBalance(player) >= cost, ChatColor.RED + "You don't have enough money to buy this flag");
+			Flag<?> flag = Validate.notNull(Utils.findFlag(args[1].toLowerCase()), ChatColor.RED + "Флаг "+args[1].toLowerCase()+" не продается");
+			Double cost = Validate.notNull(config.getFlagCost(flag.getName()), ChatColor.RED + "Данный флаг не доступен для покупки");
+			Validate.isTrue(econ.getBalance(player) >= cost, ChatColor.RED + "У вас не хватает денег для покупки флага "+args[1].toLowerCase());
 
 			econ.withdrawPlayer(player, cost);
 			Utils.setFlag(region, flag, String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
-			sender.sendMessage(ChatColor.YELLOW + "Flag set");
+			sender.sendMessage(ChatColor.YELLOW + "Флаг был успешно куплен и установлен");
 		} catch (CommandException | InvalidFlagFormat e) {
-			sender.sendMessage(ChatColor.RED + "Unable to set flag: "+e.getMessage());
+			sender.sendMessage(ChatColor.RED + "Невозможно установить флаг. Ошибка № "+e.getMessage());
 		} catch (Exception e) {
 			throw e;
 		}

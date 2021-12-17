@@ -25,12 +25,15 @@ public class Commands implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		SubCommand subcmd;
 		try {
-			subcmd = Validate.notNull(subcmds.get(args[0].toLowerCase()), ChatColor.RED + "Subcommand does not exist");
+			subcmd = Validate.notNull(subcmds.get(args[0].toLowerCase()), ChatColor.RED + "Данной команды не существует!");
 			subcmd.execute(sender, Arrays.copyOfRange(args, 1, args.length));
+
 		} catch (Validate.InvalidateException e) {
 			sender.sendMessage(e.getMessage());
 		} catch (Exception e) {
-			sender.sendMessage(ChatColor.RED + "Unknown error occured: "+e.getMessage());
+			sender.sendMessage(ChatColor.RED + "Используйте команду: /buyflag <buy|list>");
+			sender.sendMessage(ChatColor.RED + "Если хотите приобрести флаг: /buyflag buy <Название региона> <Флаг> <ALLOW | DENY>");
+			sender.sendMessage(ChatColor.RED + "Посмотреть доступные флаги: /buyflag list");
 		}
 		return true;
 	}
